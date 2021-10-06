@@ -1,0 +1,90 @@
+<div class="nav-container">
+    <a class="navbar-brand" href="/">Wingket</a>
+    <div class="search-bar">
+        <div class="search-input-wrap">
+            <input type="text" name="search-input" id="search-input" class="search-input"
+                placeholder="동네 이름, 물품명 등을 검색해보세요!">
+            <button id="header-search-button">
+                <img class="fixed-search-icon" alt="Search"
+                    src="https://d1unjqcospf8gs.cloudfront.net/assets/home/base/header/search-icon-7008edd4f9aaa32188f55e65258f1c1905d7a9d1a3ca2a07ae809b5535380f14.svg">
+            </button>
+        </div>
+    </div>
+    <div class="auth-bar">
+        <span id="log-check"></span>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+        var logView = document.getElementById("log-check");
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user !== null) {
+                logView.innerHTML = "<a style='cursor: pointer; text-decoration: none;' onclick='logout()'>로그아웃</a>";
+                // ...
+            } else {
+                logView.innerHTML = "<a style='cursor: pointer; text-decoration: none;' href='/login.html'>로그인</a>";
+            }
+        });
+    });
+
+    function logout() {
+        firebase.auth().signOut();
+        location.href = 'index.html';
+    }
+</script>
+<style>
+    .nav-container {
+        display: flex;
+        flex-wrap: inherit;
+        align-items: center;
+        padding: 0px 10px;
+    }
+
+    .search-bar {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        text-decoration: none;
+        padding: 0 10px;
+        height: 40px;
+        box-sizing: border-box;
+    }
+
+    .search-input-wrap {
+        display: flex;
+        justify-content: space-between;
+        height: 40px;
+        padding: 0;
+        margin: 0;
+        outline: none;
+    }
+
+    .search-input {
+        display: block;
+        width: 300px;
+        border: none;
+        padding: 0px 10px;
+        margin-left: -10px;
+        font-size: 1rem;
+        color: #222;
+        background-color: transparent;
+        box-sizing: border-box;
+    }
+
+    .search-input-wrap>button {
+        border: none;
+        margin: 0;
+        background-color: transparent
+    }
+
+    .auth-bar {
+        position: absolute;
+        right: 12px;
+        top: 16px;
+    }
+
+    .auth-bar>span>a {
+        color: #222;
+    }
+</style>

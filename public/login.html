@@ -1,0 +1,135 @@
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Wingket</title>
+</head>
+
+<body>
+    <!-- nav bar -->
+    <nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light"></nav>
+
+    <!-- 로그인 -->
+    <div id="signin" class="container mt-3">
+        <h3>로그인</h3>
+        <hr>
+        <div class="mb-3">
+            <input type="email" class="form-control" id="email" placeholder="계정(이메일주소)">
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="pw" placeholder="비밀번호">
+        </div>
+        <button type="submit" class="btn btn-primary lg" onclick="login()">로그인 하기</button>
+        <span>아직 아이디가 없으신가요? <a onclick="changeSign()" class="text-primary"
+                style="text-decoration: none; cursor:pointer;">회원가입</a></span>
+    </div>
+
+    <!-- 회원가입 -->
+    <div id="signup" class="container mt-3" style="display:none;">
+        <h3>회원 가입</h3>
+        <hr>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="name-new" placeholder="이름">
+        </div>
+        <div class="mb-3">
+            <input type="email" class="form-control" id="email-new" placeholder="계정(이메일주소)">
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="pw-new" placeholder="비밀번호">
+        </div>
+        <span id="err-span" style="display: block; color:red;"></span>
+        <button type="submit" class="btn btn-primary lg" onclick="signup()">가입하기</button>
+        <span>이미 아이디가 있으신가요? <a onclick="changeSign()" class="text-primary"
+                style="text-decoration: none; cursor:pointer;">로그인</a></span>
+    </div>
+
+
+    <!-- import firebase, bootstrap, jquery scripts -->
+    <script src=" https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link href="main.css" rel="stylesheet">
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBREnc6Ot6GP9flCVizpCctWPM0qJOeMD8",
+            authDomain: "wingket-e04df.firebaseapp.com",
+            projectId: "wingket-e04df",
+            storageBucket: "wingket-e04df.appspot.com",
+            appId: "1:761520525609:web:781d524a1fa0be20e5e738"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // 이 아래부터 firebase 관련 불러 쓰면 됨
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // navbar 불러오기
+        $(document).ready(function () {
+            $("#nav").load("/components/nav.html");
+        });
+
+        // 클릭에따라 로그인/로그아웃 폼 보이기
+        let signbtn = 0;
+        function changeSign() {
+            if (signbtn === 0) {
+                // 로그인창일때
+                signbtn = 1;
+                document.getElementById('signin').style.display = "none";
+                document.getElementById('signup').style.display = "";
+            } else if (signbtn === 1) {
+                // 회원가입창일때
+                signbtn = 0;
+                document.getElementById('signin').style.display = "";
+                document.getElementById('signup').style.display = "none";
+            }
+        }
+
+        function logout() {
+            firebase.auth().signOut();
+            location.href = 'index.html';
+        }
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pw').value;
+            firebase.auth().signInWithEmailAndPassword(email, password).then((result) => {
+                console.log(result.user)
+                location.href = 'index.html';
+            })
+        }
+
+        function signup() {
+            const uname = document.getElementById('name-new').value;
+            const email = document.getElementById('email-new').value;
+            const password = document.getElementById('pw-new').value;
+            const errSpan = document.getElementById('err-span');
+
+            firebase.auth().createUserWithEmailAndPassword(email, password).then((result) => {
+                console.log(result)
+                console.log(result.user)
+                result.user.updateProfile({ displayName: uname })
+                location.href = 'index.html';
+            }).catch((err) => {
+                console.log(err.message);
+                errSpan.innerHTML = `${err.message}`;
+            });
+        }
+    </script>
+</body>
+
+</html>
