@@ -10,81 +10,83 @@
             </button>
         </div>
     </div>
-    <div class="auth-bar">
-        <span id="log-check"></span>
+    <div id="auth-bar" class="auth-bar">
     </div>
-</div>
-<script>
+    <script>
 
-    $(document).ready(function () {
-        var logView = document.getElementById("log-check");
+        // 유저정보 확인
+        const 뺀거 = localStorage.getItem('user');
+        logView.innerHTML = `
+            <span>${JSON.parse(뺀거).displayName}님<span>
+            <span><a style='cursor: pointer; text-decoration: none;' onclick='logout()'>로그아웃</a><span>`;
 
         firebase.auth().onAuthStateChanged((user) => {
-            if (user !== null) {
-                logView.innerHTML = "<a style='cursor: pointer; text-decoration: none;' onclick='logout()'>로그아웃</a>";
-                // ...
+            // onAuthStateChanted는 파이어베이스에서 읽어오기때문에 갱신 속도가 좀 느림
+            // 때문에 localStorage에 바로 불러와야하는 유저 정보를 저장하고 페이지 갱신때마다 바로바로 보이도록
+            if (user) {
+                localStorage.setItem('user', JSON.stringify(user))
             } else {
-                logView.innerHTML = "<a style='cursor: pointer; text-decoration: none;' href='/login.html'>로그인</a>";
+                logView.innerHTML = "<span><a style='cursor: pointer; text-decoration: none;' href='/login.html'>로그인</a><span>";
             }
         });
-    });
 
-    function logout() {
-        firebase.auth().signOut();
-        location.href = 'index.html';
-    }
-</script>
-<style>
-    .nav-container {
-        display: flex;
-        flex-wrap: inherit;
-        align-items: center;
-        padding: 0px 10px;
-    }
+        function logout() {
+            firebase.auth().signOut();
+            localStorage.removeItem('user')
+            location.href = 'index.html';
+        }
+    </script>
+    <style>
+        .nav-container {
+            display: flex;
+            flex-wrap: inherit;
+            align-items: center;
+            padding: 0px 10px;
+        }
 
-    .search-bar {
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        text-decoration: none;
-        padding: 0 10px;
-        height: 40px;
-        box-sizing: border-box;
-    }
+        .search-bar {
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            padding: 0 10px;
+            height: 40px;
+            box-sizing: border-box;
+        }
 
-    .search-input-wrap {
-        display: flex;
-        justify-content: space-between;
-        height: 40px;
-        padding: 0;
-        margin: 0;
-        outline: none;
-    }
+        .search-input-wrap {
+            display: flex;
+            justify-content: space-between;
+            height: 40px;
+            padding: 0;
+            margin: 0;
+            outline: none;
+        }
 
-    .search-input {
-        display: block;
-        width: 300px;
-        border: none;
-        padding: 0px 10px;
-        margin-left: -10px;
-        font-size: 1rem;
-        color: #222;
-        background-color: transparent;
-        box-sizing: border-box;
-    }
+        .search-input {
+            display: block;
+            width: 300px;
+            border: none;
+            padding: 0px 10px;
+            margin-left: -10px;
+            font-size: 1rem;
+            color: #222;
+            background-color: transparent;
+            box-sizing: border-box;
+        }
 
-    .search-input-wrap>button {
-        border: none;
-        margin: 0;
-        background-color: transparent
-    }
+        .search-input-wrap>button {
+            border: none;
+            margin: 0;
+            background-color: transparent
+        }
 
-    .auth-bar {
-        position: absolute;
-        right: 12px;
-        top: 16px;
-    }
+        .auth-bar {
+            position: absolute;
+            right: 12px;
+            top: 16px;
+        }
 
-    .auth-bar>span>a {
-        color: #222;
-    }
-</style>
+        .auth-bar>span>a {
+            text-decoration: none;
+        }
+    </style>

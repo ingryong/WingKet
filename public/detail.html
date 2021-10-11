@@ -1,0 +1,77 @@
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <title>Wingket</title>
+    <link href="./assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- nav bar -->
+    <nav id="nav" class="navbar navbar-expand-lg navbar-light bg-light"></nav>
+
+    <!-- 상세페이지 -->
+    <div class="container">
+    </div>
+
+    <!-- import firebase, bootstrap, jquery scripts -->
+    <script src=" https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <script>
+        // navbar 불러오기
+        $(document).ready(function () {
+            $("#nav").load("/components/nav.html");
+        });
+    </script>
+
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBREnc6Ot6GP9flCVizpCctWPM0qJOeMD8",
+            authDomain: "wingket-e04df.firebaseapp.com",
+            projectId: "wingket-e04df",
+            storageBucket: "wingket-e04df.appspot.com",
+            appId: "1:761520525609:web:781d524a1fa0be20e5e738"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // 이 아래부터 firebase 관련 불러 쓰면 됨
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        const queryString = new URLSearchParams(window.location.search) // 쿼리스트링 자료들을 오브젝트로 변환시켜줌
+
+        db.collection('product').doc(queryString.get('id')).get().then((doc) => {
+            var 템플릿 = `
+                <div class="container">
+                    상세페이지임 
+                    <div class="detail-pic my-4" style="background-image: url(${doc.data().이미지});"></div>
+                    <div>
+                    <h5>올린사람 : ddddd</h5>
+                    <hr>
+                    <h5 class="title"${doc.data().상품명}</h5>
+                    <p class="date">${doc.data().날짜}</p>
+                    <p class="price">${doc.data().가격}</p>
+                    </div>
+                </div>`;
+            $('.container').append(템플릿);
+        });
+
+    </script>
+</body>
+
+</html>

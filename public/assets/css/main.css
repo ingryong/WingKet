@@ -36,3 +36,9 @@
     font-weight: bold;
     cursor: pointer;
   }
+  .detail-pic {
+    width: 100%;
+    height: 300px;
+    background-size: cover;
+    background-position: center;
+  } 
